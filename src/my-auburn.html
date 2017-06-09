@@ -29,7 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
 
-<dom-module id="my-app">
+<dom-module id="my-auburn">
     <template>
     <style>
       :host {
@@ -37,6 +37,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --app-secondary-color: black;
 
         display: block;
+      }
+
+      [hidden] {
+        display: none !important;
       }
 
       app-drawer-layout:not([narrow]) [drawer-toggle] {
@@ -86,14 +90,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- Drawer content -->
       <app-drawer id="drawer" slot="drawer">
         <app-toolbar>
-          <coa-user id="userElem" user="[[user]]"></coa-user>
+          <coa-user id="userElem" user="{{user}}"></coa-user>
+          <a href="#" on-click="logout" hidden$="[[!user.authenticated]]">Logout</a>
         </app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="view1" href="view1">View One</a>
-          <a name="view2" href="view2">View Two</a>
-          <a name="view3" href="view3">View Three</a>
+          <a name="welcome" href="welcome">Welcome</a>
+          <a name="facility-maintenance" href="facility-maintenance" hidden$="[[!user.authenticated]]">Facility Maintenance</a>
         </iron-selector>
-        <a href="#" on-click="logout">Logout</a>
       </app-drawer>
 
       <!-- Main content -->
@@ -106,13 +109,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </app-toolbar>
         </app-header>
 
-        <iron-pages
+        <iron-pages id="pages"
             selected="[[page]]"
             attr-for-selected="name"
             fallback-selection="view404"
             role="main">
-          <my-view1 name="view1"></my-view1>
-          <my-view2 name="view2"></my-view2>
+          <my-welcome name="welcome"></my-welcome>
+          <my-facility-maintenance name="facility-maintenance" user="[[user]]"></my-facility-maintenance>
           <my-view3 name="view3"></my-view3>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
@@ -121,10 +124,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
     <script>
-        class MyApp extends Polymer.Element {
+        class MyAuburn extends Polymer.Element {
 
             static get is() {
-                return 'my-app';
+                return 'my-auburn';
             }
 
             static get properties() {
@@ -154,14 +157,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.rootPattern = (new URL(this.rootPath)).pathname;
             }
 
-            logout(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                console.log('here');
-                this.$.userElem.logout();
-                window.location.reload();
-            }
-
             _routePageChanged(page) {
                 // Polymer 2.0 will call with `undefined` on initialization.
                 // Ignore until we are properly called with a string.
@@ -170,8 +165,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
 
                 // If no page was found in the route data, page will be an empty string.
-                // Deault to 'view1' in that case.
-                //this.page = page || 'view1';
+                // Deault to 'welcome' in that case.
+                this.page = page || 'welcome';
 
                 // Close a non-persistent drawer when the page & route are changed.
                 if (!this.$.drawer.persistent) {
@@ -180,20 +175,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             _pageChanged(page) {
-                // Load page import on demand. Show 404 page if fails
-                var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-                Polymer.importHref(
-                    resolvedPageUrl,
-                    null,
-                    this._showPage404.bind(this),
-                    true);
+                    // Load page import on demand. Show 404 page if fails
+                    var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+                    Polymer.importHref(
+                        resolvedPageUrl,
+                        this._showPage200.bind(this),
+                        this._showPage404.bind(this),
+                        true);
+                }
+                /**
+                 ** If page we traveled to has a reset fn, call it
+                 ** This is to help refresh content that has been loaded
+                 **/
+            _showPage200() {
+                if (this.$.pages.selectedItem.reset)
+                    this.$.pages.selectedItem.reset();
             }
 
             _showPage404() {
                 this.page = 'view404';
             }
+
+            logout(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                this.$.userElem.logout();
+                window.location.reload();
+            }
         }
 
-        window.customElements.define(MyApp.is, MyApp);
+        window.customElements.define(MyAuburn.is, MyAuburn);
     </script>
 </dom-module>

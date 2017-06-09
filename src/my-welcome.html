@@ -11,8 +11,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
 
-<dom-module id="my-view2">
-  <template>
+<dom-module id="my-welcome">
+    <template>
     <style include="shared-styles">
       :host {
         display: block;
@@ -22,18 +22,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <div class="card">
-      <div class="circle">2</div>
-      <h1>View Two</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
+      <h1>Welcome</h1>
+      <p>First, please sign in!</p>
+      <p>See the menu on the left for sign-in and other options.</p>
     </div>
   </template>
 
-  <script>
-    class MyView2 extends Polymer.Element {
-      static get is() { return 'my-view2'; }
-    }
+    <script>
+        class MyWelcome extends Polymer.Element {
+            static get is() {
+                return 'my-welcome';
+            }
+        }
 
-    window.customElements.define(MyView2.is, MyView2);
-  </script>
+        window.customElements.define(MyWelcome.is, MyWelcome);
+    </script>
 </dom-module>

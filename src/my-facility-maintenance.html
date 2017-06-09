@@ -1,0 +1,258 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-facility-maintenance">
+    <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+      section header {
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+      }
+      section[name="problem"] paper-button {
+        display:block;
+      }
+      p.align-right {
+        display: flex;
+        justify-content: flex-end;
+      }
+      paper-button.green {
+        background-color: var(--paper-green-500);
+        color: white;
+
+      }
+    </style>
+
+    <iron-pages
+            selected="[[stage]]"
+            attr-for-selected="name"
+            fallback-selection="problem">
+      <section name="problem" class="card">
+        <header>
+          <div class="circle">1</div>
+          <h2>Maintenance Issue Type</h2>
+          <div></div>
+        </header>
+
+        <iron-ajax auto url="https://api.auburnalabama.org/cityworks/servicerequest/problem/" last-response="{{problemCodes}}"></iron-ajax>
+
+        <template is="dom-repeat" items="[[problemCodes]]" filter="_isFacilityMaintenance" sort="_facilityMaintenceOrder">
+          <paper-button tabindex$="[[index]]" on-click="setProblemCode">[[item.Description]]</paper-button>
+        </template>
+    </section>
+    <section name="location" class="card">
+        <header>
+            <div class="circle">2</div>
+            <h2>[[srType]] &mdash; Issue Location</h2>
+            <paper-button on-click="goBack">Back</paper-button>
+        </header>
+        <p>
+            <paper-input id="Location" name="Location" label="Facility Name" on-value-changed="_facilityChange" required></paper-input>
+        </p>
+        <p>
+            <paper-input id="Address" name="Address" label="Facility Address" required></paper-input>
+        </p>
+        <p class="align-right">
+            <paper-button raised class="green" on-click="setLocation">Next</paper-button>
+        </p>
+
+        <iron-ajax id="facilitySearch" url="https://api.auburnalabama.org/organization/facility/" handle-as="json" on-response="_facilityResponse"></iron-ajax>
+    </section>
+    <section name="details" class="card">
+        <header>
+            <div class="circle">3</div>
+            <h2>[[srType]] &mdash; Issue Details</h2>
+            <paper-button on-click="goBack">Back</paper-button>
+        </header>
+        <p>
+            <paper-textarea id="Comments" name="Comments" label="Comments"></paper-textarea>
+        </p>
+        <p class="align-right">
+            <paper-button raised class="green" on-click="setDetails">Submit</paper-button>
+        </p>
+    </section>
+    <section name="confirmation">
+        <header>
+            <div class="circle">4</div>
+            <h2>Success</h2>
+            <div></div>
+        </header>
+        <p>
+            You created request #[[serviceRequest.ID]]
+        </p>
+
+        <iron-ajax id="srCreate" url="http://localhost:21695/cityworks/servicerequest" method="POST" handle-as="json" last-response="{{serviceRequest}}"></iron-ajax>
+    </section>
+    </iron-pages>
+
+    </template>
+
+    <script>
+        class MyFMReport extends Polymer.Element {
+            static get is() {
+                return 'my-facility-maintenance';
+            }
+            static get properties() {
+                return {
+                    serviceRequest: {
+                        type: Object,
+                        value: function() {
+                            return {};
+                        }
+                    }
+                }
+            }
+            ready() {
+                super.ready();
+                if (!this.user) {
+                    window.history.pushState({}, null, '/welcome');
+                    window.dispatchEvent(new CustomEvent('location-changed'));
+                }
+                this.addEventListener('keyup', this._goBackListener.bind(this));
+            }
+            reset() {
+                this.stage = '';
+                this.serviceRequest = {};
+                this.srType = null;
+            }
+            _goBackListener(e) {
+                if (e.keyCode === 27)
+                    this.goBack();
+            }
+            goBack() {
+                switch (this.stage) {
+                    case 'location':
+                        this.stage = 'problem';
+                        break;
+                    case 'details':
+                        this.stage = 'location';
+                        break;
+                    default:
+                        this.stage = 'problem';
+                        break;
+                }
+            }
+
+            _isFacilityMaintenance(item) {
+                return item.ProblemCode.indexOf('FM-') != -1 &&
+                    item.ProblemCode != "FM-GNDMNT"; //Disallow until Parks gets on CityWorks
+            }
+            _facilityChange(e) {
+                if (!e.detail.value) return; //don't search if blank
+                return; //CANT GET AUTOCOMPLETE TO WORK SO REMOVING FOR NOW
+                this.$.facilitySearch.params = {
+                    //"filter": `substringof('${e.detail.value}', Name) eq true`
+                    "filter": `startswith(Name, '${e.detail.value}') eq true`
+                }
+                this.$.facilitySearch.generateRequest();
+            }
+            _facilityResponse(e) {
+                let facilities = e.target.lastResponse;
+                //check there was a response
+                if (!facilities || facilities.length == 0) return;
+                //check the value is still correct
+                if (facilities[0].Name.indexOf(this.$.Location.value) !== 0) return;
+                //update value
+                let selectionVars = {
+                    input: this.$.Location.shadowRoot.querySelector('input'),
+                    start: this.$.Location.value.length,
+                    end: facilities[0].length
+                };
+                this.$.Location.value = facilities[0].Name;
+                this.$.Address.value = facilities[0].Address;
+                //highlight autocompleted value
+                this.createSelection(selectionVars.input, selectionVars.start, selectionVars.end);
+                this.$.Location.focus(); //FOCUS removes selection breaking the whole thing!!!
+            }
+            _facilityMaintenceOrder(a, b) {
+                if (a.ProblemCode == "FM-OTH") return 1;
+                if (b.ProblemCode == "FM-OTH") return -1; //Moves `Other` to bottom
+                return a.Description < b.Description ? -1 : 1;
+            }
+
+            setProblemCode(e) {
+                this.serviceRequest.ProblemSid = e.model.item.ProblemSid;
+                this.srType = e.model.item.Description;
+                this.stage = 'location';
+                this.$.Location.focus();
+            }
+            setLocation() {
+                //validate fields, return if invalid
+                this.$.Location.validate();
+                this.$.Address.validate();
+                if (this.$.Location.invalid || this.$.Address.invalid) return;
+
+                this.serviceRequest.Location = this.$.Location.value;
+                this.serviceRequest.Address = this.$.Address.value;
+                this.stage = 'details';
+                this.$.Comments.focus();
+            }
+            setDetails() {
+                //validate fields, return if invalid
+                this.$.Comments.validate();
+                if (this.$.Comments.invalid) return;
+
+                this.serviceRequest.Comments = this.$.Comments.value;
+                //set user name - could move this to the beginning *shrugs* 
+                //if it's at the beginning we could check authenticated
+                let callerName = this.parseName(this.user.name);
+                this.serviceRequest.CallerFirstName = callerName.first;
+                this.serviceRequest.CallerLastName = callerName.last;
+                this.serviceRequest.CallerEmail = this.user.email;
+
+                this.createRequest();
+            }
+            createRequest() {
+                console.log(this.serviceRequest);
+                this.$.srCreate.params = this.serviceRequest;
+                this.$.srCreate.generateRequest();
+            }
+            parseName(name) {
+                let pieces = name.split(' ');
+                if (pieces[0].indexOf(',')) {
+                    return {
+                        "first": pieces[1],
+                        "last": pieces[0].substring(0, pieces[0].length - 1)
+                    };
+                } else if (pieces[1].length > 2 || !pieces[2]) {
+                    return {
+                        "first": pieces[0],
+                        "last": pieces[1]
+                    };
+                }
+                return {
+                    "first": pieces[0],
+                    "last": pieces[2]
+                }
+            }
+            createSelection(field, start, end) {
+                if (field.createTextRange) {
+                    var selRange = field.createTextRange();
+                    selRange.collapse(true);
+                    selRange.moveStart('character', start);
+                    selRange.moveEnd('character', end - start);
+                    selRange.select();
+                } else if (field.setSelectionRange) {
+                    field.setSelectionRange(start, end);
+                } else if (field.selectionStart) {
+                    field.selectionStart = start;
+                    field.selectionEnd = end;
+                }
+                //field.focus();
+            }
+        }
+
+        window.customElements.define(MyFMReport.is, MyFMReport);
+    </script>
+</dom-module>
