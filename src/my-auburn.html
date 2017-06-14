@@ -24,9 +24,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/coa-user/coa-user.html">
 
-<link rel="lazy-import" href="my-view1.html">
-<link rel="lazy-import" href="my-view2.html">
-<link rel="lazy-import" href="my-view3.html">
+<link rel="lazy-import" href="my-welcome.html">
+<link rel="lazy-import" href="my-facility-maintenance.html">
 <link rel="lazy-import" href="my-view404.html">
 
 <dom-module id="my-auburn">
@@ -57,7 +56,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       coa-user {
-        font-size: 10px;
+        font-size: 16px;
       }
 
       .drawer-list {
@@ -90,7 +89,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- Drawer content -->
       <app-drawer id="drawer" slot="drawer">
         <app-toolbar>
-          <coa-user id="userElem" user="{{user}}"></coa-user>
+          <coa-user id="userElem" 
+                    client-id="3"
+                    client-secret="192F13E1-7535-478D-BFE6-A73534972CA7"
+                    user="{{user}}"></coa-user>
           <a href="#" on-click="logout" hidden$="[[!user.authenticated]]">Logout</a>
         </app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
@@ -116,7 +118,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             role="main">
           <my-welcome name="welcome"></my-welcome>
           <my-facility-maintenance name="facility-maintenance" user="[[user]]"></my-facility-maintenance>
-          <my-view3 name="view3"></my-view3>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
       </app-header-layout>

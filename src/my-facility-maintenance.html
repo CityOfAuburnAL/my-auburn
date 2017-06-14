@@ -23,7 +23,7 @@
       section[name="problem"] paper-button {
         display:block;
       }
-      p.align-right {
+      div.align-right {
         display: flex;
         justify-content: flex-end;
       }
@@ -31,6 +31,24 @@
         background-color: var(--paper-green-500);
         color: white;
 
+      }
+      ul.paper-input-suggestions {
+          background: #FFF;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+          cursor: pointer;
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          position: absolute;
+          z-index: 8;
+      }
+      ul.paper-input-suggestions li {
+          padding: 5px;
+      }
+      ul.paper-input-suggestions li:hover,
+      ul.paper-input-suggestions li[highlighted] {
+        background: #FFF;
+        color: #000
       }
     </style>
 
@@ -48,7 +66,7 @@
         <iron-ajax auto url="https://api.auburnalabama.org/cityworks/servicerequest/problem/" last-response="{{problemCodes}}"></iron-ajax>
 
         <template is="dom-repeat" items="[[problemCodes]]" filter="_isFacilityMaintenance" sort="_facilityMaintenceOrder">
-          <paper-button tabindex$="[[index]]" on-click="setProblemCode">[[item.Description]]</paper-button>
+          <paper-button tabindex$="[[_addOne(index)]]" on-click="setProblemCode">[[item.Description]]</paper-button>
         </template>
     </section>
     <section name="location" class="card">
@@ -57,17 +75,22 @@
             <h2>[[srType]] &mdash; Issue Location</h2>
             <paper-button on-click="goBack">Back</paper-button>
         </header>
-        <p>
-            <paper-input id="Location" name="Location" label="Facility Name" on-value-changed="_facilityChange" required></paper-input>
-        </p>
-        <p>
+        <div>
+            <paper-input id="Location" name="Location" label="Facility Name" required></paper-input>
+            <ul id="PIACList" class="paper-input-suggestions">
+                <template is="dom-repeat" items="[[PIACsearchResults]]">
+                    <li>[[item.Name]]</li>
+                </template>
+            </ul>
+        </div>
+        <div>
             <paper-input id="Address" name="Address" label="Facility Address" required></paper-input>
-        </p>
-        <p class="align-right">
-            <paper-button raised class="green" on-click="setLocation">Next</paper-button>
-        </p>
+        </div>
+        <div class="align-right">
+            <paper-button id="facilityNext" raised class="green" on-click="setLocation">Next</paper-button>
+        </div>
 
-        <iron-ajax id="facilitySearch" url="https://api.auburnalabama.org/organization/facility/" handle-as="json" on-response="_facilityResponse"></iron-ajax>
+        <iron-ajax id="facilitySearch" url="https://api.auburnalabama.org/organization/facility/" handle-as="json" last-response="{{PIACsearchResults}}"></iron-ajax>
     </section>
     <section name="details" class="card">
         <header>
@@ -76,7 +99,7 @@
             <paper-button on-click="goBack">Back</paper-button>
         </header>
         <p>
-            <paper-textarea id="Comments" name="Comments" label="Comments"></paper-textarea>
+            <paper-textarea id="Details" name="Details" label="Details"></paper-textarea>
         </p>
         <p class="align-right">
             <paper-button raised class="green" on-click="setDetails">Submit</paper-button>
@@ -92,7 +115,7 @@
             You created request #[[serviceRequest.ID]]
         </p>
 
-        <iron-ajax id="srCreate" url="http://localhost:21695/cityworks/servicerequest" method="POST" handle-as="json" last-response="{{serviceRequest}}"></iron-ajax>
+        <iron-ajax id="srCreate" url="https://api.auburnalabama.org/cityworks/servicerequest" method="POST" handle-as="json" last-response="{{serviceRequest}}"></iron-ajax>
     </section>
     </iron-pages>
 
@@ -110,7 +133,8 @@
                         value: function() {
                             return {};
                         }
-                    }
+                    },
+                    user: Object
                 }
             }
             ready() {
@@ -120,6 +144,13 @@
                     window.dispatchEvent(new CustomEvent('location-changed'));
                 }
                 this.addEventListener('keyup', this._goBackListener.bind(this));
+                this.$.Location.addEventListener('keyup', this._facilityChange.bind(this));
+                this.$.Location.addEventListener('keydown', this.PIACinputMove.bind(this));
+                this.$.Location.addEventListener('focusout', this.PIACinputFocus.bind(this));
+                this.$.PIACList.addEventListener('click', this.PIAClistClick.bind(this));
+                this.PIACList = this.$.PIACList;
+                //HTML5 Location - Disabling request until we can query nearest building
+                //this.parseLocation();
             }
             reset() {
                 this.stage = '';
@@ -144,36 +175,92 @@
                 }
             }
 
-            _isFacilityMaintenance(item) {
-                return item.ProblemCode.indexOf('FM-') != -1 &&
-                    item.ProblemCode != "FM-GNDMNT"; //Disallow until Parks gets on CityWorks
+            PIACinputMove(event) {
+                let i = this.PIACselection || 0;
+                switch (event.keyCode) {
+                    case 13: //enter
+                        //if !selection return true
+                        if (!this.PIACselection === undefined) return true;
+                        this.PIACselectResult(this.PIACselection);
+                        return false;
+                    case 38: //up
+                        this.PIAChighlightResult(i > 0 ? i - 1 : this.PIACsearchResults.length - 1);
+                        event.preventDefault(); //stop from cursor moving
+                        break;
+                    case 40: //down
+                        this.PIAChighlightResult(this.PIACselection || this.PIACselection === i ? i + 1 : i);
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+            PIACinputFocus() {
+                this._debounce = window.setTimeout(this.PIACclearResult.bind(this), 175);
+            }
+            PIAClistClick(event) {
+                clearTimeout(this._debounce);
+                let parent = event.currentTarget;
+                for (var i = 0; i < parent.children.length; i++) {
+                    if (parent.children[i] === event.srcElement) {
+                        this.PIACselectResult(i);
+                        break;
+                    }
+                }
+            }
+            PIACisValidIndex(index) {
+                let results = this.PIACsearchResults;
+                return !(!results || !results.length || results.length <= index);
+            }
+            PIAChighlightResult(index) {
+                if (!this.PIACisValidIndex(index)) return;
+                //clear current selection
+                if (this.PIACselection !== undefined && this.PIACselection != index) {
+                    this.PIACList.children[this.PIACselection].removeAttribute('highlighted');
+                }
+                //select new selection
+                this.PIACselection = index || 0;
+                let resultElem = this.PIACList.children[index];
+                resultElem.setAttribute('highlighted', true);
+            }
+            PIACselectResult(index) {
+                if (!this.PIACisValidIndex(index)) return;
+                //CUSTOM PART
+                this._facilityComplete(this.PIACsearchResults[index]);
+                this.dispatchEvent(new CustomEvent('autocomplete-selected', {
+                    bubbles: true,
+                    composed: true
+                }));
+            }
+            PIACclearResult() {
+                this.PIACsearchResults = [];
+                this.PIACselection = undefined;
+            }
+
+            _facilityComplete(facility) {
+                this.$.Location.value = facility.Name;
+                this.$.Address.value = facility.Address;
+                this.PIACclearResult();
+                this.$.facilityNext.focus();
             }
             _facilityChange(e) {
-                if (!e.detail.value) return; //don't search if blank
-                return; //CANT GET AUTOCOMPLETE TO WORK SO REMOVING FOR NOW
+                if (!e.target.value) {
+                    return this.PIACclearResult(); //don't search if blank
+                }
+
                 this.$.facilitySearch.params = {
                     //"filter": `substringof('${e.detail.value}', Name) eq true`
-                    "filter": `startswith(Name, '${e.detail.value}') eq true`
+                    "filter": `startswith(Name, '${e.target.value}') eq true`
                 }
                 this.$.facilitySearch.generateRequest();
             }
-            _facilityResponse(e) {
-                let facilities = e.target.lastResponse;
-                //check there was a response
-                if (!facilities || facilities.length == 0) return;
-                //check the value is still correct
-                if (facilities[0].Name.indexOf(this.$.Location.value) !== 0) return;
-                //update value
-                let selectionVars = {
-                    input: this.$.Location.shadowRoot.querySelector('input'),
-                    start: this.$.Location.value.length,
-                    end: facilities[0].length
-                };
-                this.$.Location.value = facilities[0].Name;
-                this.$.Address.value = facilities[0].Address;
-                //highlight autocompleted value
-                this.createSelection(selectionVars.input, selectionVars.start, selectionVars.end);
-                this.$.Location.focus(); //FOCUS removes selection breaking the whole thing!!!
+
+            _addOne(i) {
+                return i + 1;
+            }
+            _isFacilityMaintenance(item) {
+                return item.ProblemCode.indexOf('FM-') != -1 &&
+                    item.ProblemCode != "FM-GNDMNT"; //Disallow until Parks gets on CityWorks
             }
             _facilityMaintenceOrder(a, b) {
                 if (a.ProblemCode == "FM-OTH") return 1;
@@ -196,14 +283,17 @@
                 this.serviceRequest.Location = this.$.Location.value;
                 this.serviceRequest.Address = this.$.Address.value;
                 this.stage = 'details';
-                this.$.Comments.focus();
+                this.$.Details.focus();
+            }
+            setDeviceLocation(position) {
+                this.position = position;
             }
             setDetails() {
                 //validate fields, return if invalid
-                this.$.Comments.validate();
-                if (this.$.Comments.invalid) return;
+                this.$.Details.validate();
+                if (this.$.Details.invalid) return;
 
-                this.serviceRequest.Comments = this.$.Comments.value;
+                this.serviceRequest.Details = this.$.Details.value;
                 //set user name - could move this to the beginning *shrugs* 
                 //if it's at the beginning we could check authenticated
                 let callerName = this.parseName(this.user.name);
@@ -215,7 +305,7 @@
             }
             createRequest() {
                 console.log(this.serviceRequest);
-                this.$.srCreate.params = this.serviceRequest;
+                this.$.srCreate.body = JSON.stringify(this.serviceRequest);
                 this.$.srCreate.generateRequest();
             }
             parseName(name) {
@@ -236,20 +326,12 @@
                     "last": pieces[2]
                 }
             }
-            createSelection(field, start, end) {
-                if (field.createTextRange) {
-                    var selRange = field.createTextRange();
-                    selRange.collapse(true);
-                    selRange.moveStart('character', start);
-                    selRange.moveEnd('character', end - start);
-                    selRange.select();
-                } else if (field.setSelectionRange) {
-                    field.setSelectionRange(start, end);
-                } else if (field.selectionStart) {
-                    field.selectionStart = start;
-                    field.selectionEnd = end;
+            parseLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(this.setDeviceLocation.bind(this));
+                } else {
+                    x.innerHTML = "Geolocation is not supported by this browser.";
                 }
-                //field.focus();
             }
         }
 
