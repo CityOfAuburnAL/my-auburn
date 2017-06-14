@@ -15,6 +15,21 @@
         "manifest.json",
         "bower_components/webcomponentsjs/*.js"
     ],
+    "builds": [{
+        "name": "es5-minified",
+        "bundle": false,
+        "html": {
+            "minify": true
+        },
+        "css": {
+            "minify": true
+        },
+        "js": {
+            "minify": true,
+            "compile": true
+        },
+        "addServiceWorker": false
+    }],
     "lint": {
         "rules": ["polymer-2"]
     }
