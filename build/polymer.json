@@ -1,0 +1,46 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src\\my-auburn.html",
+  "fragments": [
+    "src\\my-welcome.html",
+    "src\\my-facility-maintenance.html",
+    "src\\my-view404.html"
+  ],
+  "sources": [
+    "src\\**\\*",
+    "images\\**\\*",
+    "bower.json",
+    "index.html",
+    "src\\my-auburn.html",
+    "src\\my-welcome.html",
+    "src\\my-facility-maintenance.html",
+    "src\\my-view404.html"
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components\\webcomponentsjs\\*.js",
+    "bower_components\\webcomponentsjs\\*.js"
+  ],
+  "builds": [
+    {
+      "name": "es5-minified",
+      "bundle": false,
+      "html": {
+        "minify": true
+      },
+      "css": {
+        "minify": true
+      },
+      "js": {
+        "minify": true,
+        "compile": true
+      },
+      "addServiceWorker": false
+    }
+  ],
+  "lint": {
+    "rules": [
+      "polymer-2"
+    ]
+  }
+}
