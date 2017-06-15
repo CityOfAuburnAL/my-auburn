@@ -77,13 +77,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <app-location route="{{route}}"></app-location>
+    <app-location route="{{route}}" url-space-regex="^/"></app-location>
     <app-route
         route="{{route}}"
-        pattern="[[rootPattern]]:page"
+        pattern="/:page"
         data="{{routeData}}"
-        tail="{{subroute}}"
-        query-params="{{queryParams}}"></app-route>
+        tail="{{subroute}}"></app-route>
 
     <app-drawer-layout fullbleed>
       <!-- Drawer content -->
@@ -96,8 +95,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <a href="#" on-click="logout" hidden$="[[!user.authenticated]]">Logout</a>
         </app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-          <a name="welcome" href="welcome">Welcome</a>
-          <a name="facility-maintenance" href="facility-maintenance" hidden$="[[!user.authenticated]]">Facility Maintenance</a>
+          <a name="welcome" href="/welcome">Welcome</a>
+          <a name="facility-maintenance" href="/facility-maintenance" hidden$="[[!user.authenticated]]">Facility Maintenance</a>
         </iron-selector>
       </app-drawer>
 
@@ -136,7 +135,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     page: {
                         type: String,
                         reflectToAttribute: true,
-                        observer: '_pageChanged',
+                        observer: '_pageChanged'
                     },
                     rootPattern: String,
                     routeData: Object,
@@ -146,30 +145,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             static get observers() {
                 return [
-                    '_routePageChanged(routeData.page)',
+                    '_routePageChanged(routeData.page)'
                 ];
             }
 
-            constructor() {
-                super();
-
-                // Get root pattern for app-route, for more info about `rootPath` see:
-                // https://www.polymer-project.org/2.0/docs/upgrade#urls-in-templates
-                this.rootPattern = (new URL(this.rootPath)).pathname;
-            }
-
             _routePageChanged(page) {
-                // Polymer 2.0 will call with `undefined` on initialization.
-                // Ignore until we are properly called with a string.
-                if (page === undefined) {
-                    return;
-                }
-
-                // If no page was found in the route data, page will be an empty string.
-                // Deault to 'welcome' in that case.
                 this.page = page || 'welcome';
 
-                // Close a non-persistent drawer when the page & route are changed.
                 if (!this.$.drawer.persistent) {
                     this.$.drawer.close();
                 }

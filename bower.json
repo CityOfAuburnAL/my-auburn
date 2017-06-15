@@ -17,12 +17,12 @@
         "paper-icon-button": "PolymerElements/paper-icon-button#^2.0.0",
         "paper-input": "PolymerElements/paper-input#^2.0.0",
         "polymer": "Polymer/polymer#^2.0.1",
-        "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0-rc.7",
+        "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
 
         "coa-user": "git+https://rube203.visualstudio.com/DefaultCollection/www.auburnalabama.org/_git/coa-user"
     },
     "devDependencies": {
-        "web-component-tester": "Polymer/web-component-tester#^6.0.0-prerelease.7"
+        "web-component-tester": "Polymer/web-component-tester#^6.0.0"
     },
     "private": true
 }

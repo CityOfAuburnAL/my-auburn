@@ -90,7 +90,7 @@
             <paper-button id="facilityNext" raised class="green" on-click="setLocation">Next</paper-button>
         </div>
 
-        <iron-ajax id="facilitySearch" url="https://api.auburnalabama.org/organization/facility/" handle-as="json" last-response="{{PIACsearchResults}}"></iron-ajax>
+        <iron-ajax id="facilitySearch" url="https://api.auburnalabama.org/organization/facility/" last-response="{{PIACsearchResults}}"></iron-ajax>
     </section>
     <section name="details" class="card">
         <header>
@@ -105,17 +105,17 @@
             <paper-button raised class="green" on-click="setDetails">Submit</paper-button>
         </p>
     </section>
-    <section name="confirmation">
+    <section name="confirmation" class="card">
         <header>
             <div class="circle">4</div>
             <h2>Success</h2>
             <div></div>
         </header>
         <p>
-            You created request #[[serviceRequest.ID]]
+            You created request #[[serviceRequest.RequestId]]
         </p>
 
-        <iron-ajax id="srCreate" url="https://api.auburnalabama.org/cityworks/servicerequest" method="POST" handle-as="json" last-response="{{serviceRequest}}"></iron-ajax>
+        <iron-ajax id="srCreate" url="https://api.auburnalabama.org/cityworks/servicerequest" method="POST" content-type="application/json" last-response="{{serviceRequest}}" on-response="goConfirmation"></iron-ajax>
     </section>
     </iron-pages>
 
@@ -173,6 +173,9 @@
                         this.stage = 'problem';
                         break;
                 }
+            }
+            goConfirmation() {
+                this.stage = 'confirmation';
             }
 
             PIACinputMove(event) {
@@ -304,7 +307,6 @@
                 this.createRequest();
             }
             createRequest() {
-                console.log(this.serviceRequest);
                 this.$.srCreate.body = JSON.stringify(this.serviceRequest);
                 this.$.srCreate.generateRequest();
             }
