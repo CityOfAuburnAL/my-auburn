@@ -99,6 +99,17 @@
             <paper-button on-click="goBack">Back</paper-button>
         </header>
         <p>
+            <button hidden="[[mediaStreaming]]" on-click="startMedia">Use Camera</button>
+            <button hidden="[[!isMediaReady(mediaStreaming, mediaData)]]" on-click="clearMedia">Clear Photo</button>
+            <button hidden="[[!mediaStreaming]]" on-click="captureMedia">Set Photo</button>
+            <button hidden="[[!mediaStreaming]]" on-click="resetMedia">Cancel</button>
+        </p>
+        <p>
+            <video hidden="[[!mediaStreaming]]" id="videoPreview">Video stream not available.</video>
+            <canvas id="videoCapture" hidden></canvas>
+            <img hidden="[[!isMediaReady(mediaStreaming, mediaData)]]" id="imgCapture">
+        </p>
+        <p>
             <paper-textarea id="Details" name="Details" label="Details"></paper-textarea>
         </p>
         <p class="align-right">
@@ -112,10 +123,11 @@
             <div></div>
         </header>
         <p>
-            You created request #[[serviceRequest.RequestId]]
+            Thank you for submitting your service request. Your Service Request number is #[[serviceRequest.RequestId]].
         </p>
 
-        <iron-ajax id="srCreate" url="https://api.auburnalabama.org/cityworks/servicerequest" method="POST" content-type="application/json" last-response="{{serviceRequest}}" on-response="goConfirmation"></iron-ajax>
+        <iron-ajax id="srCreate" url="https://api.auburnalabama.org/cityworks/servicerequest" method="POST" content-type="application/json" last-response="{{serviceRequest}}" on-response="srCreated"></iron-ajax>
+        <iron-ajax id="srUpload" method="POST"></iron-ajax>
     </section>
     </iron-pages>
 
@@ -133,6 +145,14 @@
                         value: function() {
                             return {};
                         }
+                    },
+                    mediaStreaming: {
+                        type: Boolean,
+                        value: false
+                    },
+                    mediaData: {
+                        type: String,
+                        value: null
                     },
                     user: Object
                 }
@@ -156,6 +176,9 @@
                 this.stage = '';
                 this.serviceRequest = {};
                 this.srType = null;
+                this.$.Location.value = '';
+                this.$.Address.value = '';
+                this.$.Details.value = '';
             }
             _goBackListener(e) {
                 if (e.keyCode === 27)
@@ -176,6 +199,17 @@
             }
             goConfirmation() {
                 this.stage = 'confirmation';
+            }
+            srCreated(e) {
+                //proceed to confirmation
+                this.goConfirmation();
+                //check for attachment, upload after confirmation as the SR was created
+                //TODO - error handling to report when attachment fails since the user won't notice
+                if (this.mediaData && this.serviceRequest.RequestId) {
+                    this.$.srUpload.url = `https://api.auburnalabama.org/cityworks/servicerequest/${this.serviceRequest.RequestId}/attachment`;
+                    this.$.srUpload.body = this.uploadMedia(this.mediaData);
+                    this.$.srUpload.generateRequest();
+                }
             }
 
             PIACinputMove(event) {
@@ -334,6 +368,102 @@
                 } else {
                     x.innerHTML = "Geolocation is not supported by this browser.";
                 }
+            }
+
+            // returns true if not currently capturing but there is a picture
+            isMediaReady(mediaStreaming, mediaData) {
+                    return !mediaStreaming && mediaData;
+                }
+                // ref - https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Taking_still_photos
+            startMedia() {
+                //Request Permissions, then sets the video src and plays the video
+                navigator.mediaDevices.getUserMedia({
+                        video: true,
+                        audio: false
+                    })
+                    .then(function(stream) {
+                        this.mediaStream = stream;
+                        this.$.videoPreview.srcObject = stream;
+                        this.$.videoPreview.play();
+                    }.bind(this))
+                    .catch(function(err) {
+                        console.error('Video Request error! ' + err);
+                    });
+                //Listen for the video to start playing
+                //TODO - make this full-width responsive!!!
+                this.captureWidth = 320;
+                this.$.videoPreview.addEventListener('canplay', function(ev) {
+                    if (!this.mediaStreaming) {
+                        this.captureHeight = this.$.videoPreview.videoHeight / (this.$.videoPreview.videoWidth / this.captureWidth);
+
+                        this.$.videoPreview.setAttribute('width', this.captureWidth);
+                        this.$.videoPreview.setAttribute('height', this.captureHeight);
+                        this.$.videoCapture.setAttribute('width', this.captureWidth);
+                        this.$.videoCapture.setAttribute('height', this.captureHeight);
+                        this.mediaStreaming = true;
+                    }
+                }.bind(this), false);
+                //clear the photo box
+                this.resetMedia();
+            }
+            clearMedia() {
+                this.stopMedia();
+                this.mediaData = null;
+                this.$.imgCapture.removeAttribute('src');
+            }
+            stopMedia() {
+                this.$.videoPreview.pause();
+                this.mediaStreaming = false;
+                this.mediaStream.getVideoTracks()[0].stop();
+            }
+            resetMedia() {
+                var context = this.$.videoCapture.getContext('2d');
+                context.fillStyle = "#AAA";
+                context.fillRect(0, 0, this.$.videoCapture.width, this.$.videoCapture.height);
+
+                var data = this.$.videoCapture.toDataURL('image/png');
+                this.$.imgCapture.setAttribute('src', data);
+            }
+            captureMedia() {
+                var context = this.$.videoCapture.getContext('2d');
+                if (this.captureWidth && this.captureHeight) {
+                    this.$.videoCapture.width = this.captureWidth;
+                    this.$.videoCapture.height = this.captureHeight;
+                    context.drawImage(this.$.videoPreview, 0, 0, this.captureWidth, this.captureHeight);
+
+                    this.mediaData = this.$.videoCapture.toDataURL('image/png');
+                    this.$.imgCapture.setAttribute('src', this.mediaData);
+                    //stop when picture captured
+                    this.stopMedia();
+                } else {
+                    this.resetMedia();
+                }
+            }
+            uploadMedia(imgData) {
+                    var file = this.dataURItoBlob(imgData);
+                    var data = new FormData();
+                    data.append('file', file, 'capture.png');
+
+                    return data;
+                }
+                // ref: https://web.archive.org/web/20160425180542/http://blog.devteaminc.co/posting-a-canvas-image-to-twitter-using-oauth/ 
+            dataURItoBlob(dataURI) {
+                // convert base64/URLEncoded data component to raw binary data held in a string
+                var byteString;
+                if (dataURI.split(',')[0].indexOf('base64') >= 0)
+                    byteString = atob(dataURI.split(',')[1]);
+                else
+                    byteString = unescape(dataURI.split(',')[1]);
+                // separate out the mime component
+                var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+                // write the bytes of the string to a typed array
+                var ia = new Uint8Array(byteString.length);
+                for (var i = 0; i < byteString.length; i++) {
+                    ia[i] = byteString.charCodeAt(i);
+                }
+                return new Blob([ia], {
+                    type: mimeString
+                });
             }
         }
 
