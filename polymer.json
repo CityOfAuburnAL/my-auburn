@@ -28,7 +28,7 @@
             "minify": true,
             "compile": true
         },
-        "addServiceWorker": false
+        "addServiceWorker": true
     }],
     "lint": {
         "rules": ["polymer-2"]

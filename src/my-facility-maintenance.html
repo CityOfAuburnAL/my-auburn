@@ -15,10 +15,17 @@
 
         padding: 10px;
       }
+      video {
+          box-sizing: border-box;
+          width: 100%;
+      }
+      img {
+          max-width: 100%;
+      }
       section header {
         display: flex;
         justify-content: space-between;
-        align-content: center;
+        align-items: center;
       }
       section[name="problem"] paper-button {
         display:block;
@@ -102,7 +109,7 @@
             <button hidden="[[mediaStreaming]]" on-click="startMedia">Use Camera</button>
             <button hidden="[[!isMediaReady(mediaStreaming, mediaData)]]" on-click="clearMedia">Clear Photo</button>
             <button hidden="[[!mediaStreaming]]" on-click="captureMedia">Set Photo</button>
-            <button hidden="[[!mediaStreaming]]" on-click="resetMedia">Cancel</button>
+            <button hidden="[[!mediaStreaming]]" on-click="stopMedia">Cancel</button>
         </p>
         <p>
             <video hidden="[[!mediaStreaming]]" id="videoPreview">Video stream not available.</video>
@@ -112,9 +119,9 @@
         <p>
             <paper-textarea id="Details" name="Details" label="Details"></paper-textarea>
         </p>
-        <p class="align-right">
+        <div class="align-right">
             <paper-button raised class="green" on-click="setDetails">Submit</paper-button>
-        </p>
+        </div>
     </section>
     <section name="confirmation" class="card">
         <header>
@@ -378,7 +385,9 @@
             startMedia() {
                 //Request Permissions, then sets the video src and plays the video
                 navigator.mediaDevices.getUserMedia({
-                        video: true,
+                        video: {
+                            facingMode: "environment"
+                        },
                         audio: false
                     })
                     .then(function(stream) {
@@ -394,10 +403,15 @@
                 this.captureWidth = 320;
                 this.$.videoPreview.addEventListener('canplay', function(ev) {
                     if (!this.mediaStreaming) {
-                        this.captureHeight = this.$.videoPreview.videoHeight / (this.$.videoPreview.videoWidth / this.captureWidth);
+                        //this.captureHeight = this.$.videoPreview.videoHeight / (this.$.videoPreview.videoWidth / this.captureWidth);
+                        //this.$.videoPreview.setAttribute('width', this.captureWidth);
+                        //this.$.videoPreview.setAttribute('height', this.captureHeight);
 
-                        this.$.videoPreview.setAttribute('width', this.captureWidth);
-                        this.$.videoPreview.setAttribute('height', this.captureHeight);
+                        //set canvas size to resolution of camera
+                        //TODO - what happens when camera is switched???
+                        this.captureWidth = this.$.videoPreview.videoWidth;
+                        this.captureHeight = this.$.videoPreview.videoHeight;
+
                         this.$.videoCapture.setAttribute('width', this.captureWidth);
                         this.$.videoCapture.setAttribute('height', this.captureHeight);
                         this.mediaStreaming = true;
