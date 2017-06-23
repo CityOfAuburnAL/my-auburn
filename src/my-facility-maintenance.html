@@ -39,6 +39,9 @@
         color: white;
 
       }
+      paper-input {
+          overflow-x: hidden;/* There was a horizontal scroll bar in Edge*/
+      }
       ul.paper-input-suggestions {
           background: #FFF;
           box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
@@ -98,6 +101,7 @@
         </div>
 
         <iron-ajax id="facilitySearch" url="https://api.auburnalabama.org/organization/facility/" last-response="{{PIACsearchResults}}"></iron-ajax>
+        <iron-ajax id="facilityLocate" url="https://api.auburnalabama.org/organization/facility/[[position.coords.longitude]]/[[position.coords.latitude]]" on-response="handleClosestFacility"></iron-ajax>
     </section>
     <section name="details" class="card">
         <header>
@@ -161,6 +165,9 @@
                         type: String,
                         value: null
                     },
+                    stage: String,
+                    srType: String,
+                    position: Object,
                     user: Object
                 }
             }
@@ -177,7 +184,7 @@
                 this.$.PIACList.addEventListener('click', this.PIAClistClick.bind(this));
                 this.PIACList = this.$.PIACList;
                 //HTML5 Location - Disabling request until we can query nearest building
-                //this.parseLocation();
+                this.parseLocation();
             }
             reset() {
                 this.stage = '';
@@ -313,8 +320,13 @@
             }
 
             setProblemCode(e) {
+                //set problem code vars
                 this.serviceRequest.ProblemSid = e.model.item.ProblemSid;
                 this.srType = e.model.item.Description;
+                //see if next step vars can be auto-populated
+                if (this.position && !this.$.Location.value)
+                    this.$.facilityLocate.generateRequest();
+                //move to next step
                 this.stage = 'location';
                 this.$.Location.focus();
             }
@@ -332,6 +344,16 @@
             setDeviceLocation(position) {
                 this.position = position;
             }
+            handleClosestFacility(e) {
+                if (e.detail.response && e.detail.response.Name) {
+                    this.$.Location.value = e.detail.response.Name;
+                    this.$.Address.value = e.detail.response.Address;
+                    //highlight and focus for easy change
+                    this.$.Location.focus();
+                    this.$.Location.inputElement.inputElement.select();
+                }
+            }
+
             setDetails() {
                 //validate fields, return if invalid
                 this.$.Details.validate();
@@ -400,7 +422,7 @@
                     });
                 //Listen for the video to start playing
                 //TODO - make this full-width responsive!!!
-                this.captureWidth = 320;
+                //this.captureWidth = 320;
                 this.$.videoPreview.addEventListener('canplay', function(ev) {
                     if (!this.mediaStreaming) {
                         //this.captureHeight = this.$.videoPreview.videoHeight / (this.$.videoPreview.videoWidth / this.captureWidth);
