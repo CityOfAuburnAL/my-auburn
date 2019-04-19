@@ -9,6 +9,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-welcome">
@@ -19,12 +21,126 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         padding: 10px;
       }
+      h1 small {
+        font-weight: 400;
+      }
+
+      ul {
+        list-style: none;
+        margin: 0 0 1em 0;
+        padding: 0;
+      }
+      li {
+        display: flex;
+        justify-content: space-between;
+        overflow: hidden;
+      }
+      li:first-of-type {
+        background: rgba(0, 157, 220, 0.85);
+        color: #FFF;
+        font-weight: bold;
+      }
+      li span {
+        box-sizing: border-box;
+        flex: 0 0 10em;
+        min-width: 10em;
+        padding: 0.25em;
+        text-align: center;
+      }
+      li span:nth-of-type(5) {
+        flex: 0 0 6.85em;
+        min-width: 6.85em;
+      }
+      li span:first-of-type {
+        flex: 0 0 4.1em;
+        min-width: 4.1em;
+        text-align: left;
+      }
+      li span:last-of-type {
+        flex: 1 0 auto;
+      }
+      li div {       
+        align-self: stretch;
+        flex: 1 0 auto;
+        font-weight: bold;
+        text-align: center;
+        padding: 0.25em;
+      }
+      li div:not([hidden]) ~ span:not(:first-of-type) {
+        display: none;
+      }
+      li:nth-of-type(2n+3) {
+        background-color: #eee;
+      }
+      /*polyfill*/
+      [hidden] {
+        display: none !important;
+      }
+      /* Mobile Styles */
+      @media screen and (max-width: 1279px) {
+        li:first-of-type {
+          display: none;
+        }
+        li {
+          flex-direction: column;
+        }
+        li span {
+          flex-basis: auto !important;
+          text-align: left;
+        }
+        li span:first-of-type {
+          font-weight: bold;
+        }
+        li span:nth-of-type(2)::before {
+          content: 'Type: ';
+        }
+        li span:nth-of-type(3)::before {
+          content: 'Opened: ';
+        }
+        li span:nth-of-type(4)::before {
+          content: 'Location: ';
+        }
+        li span:nth-of-type(6)::before {
+          content: 'Contact: ';
+        }
+        li span:nth-of-type(5)::before {
+          content: 'Status:';
+        }
+      }
+
     </style>
 
-    <div class="card">
+    <iron-ajax id="searchUserRequests" url="https://api.auburnalabama.org/cityworks/servicerequest/search?email={{user.email}}" last-response="{{requests}}"></iron-ajax>
+
+    <div class="card" hidden$="[[user.authenticated]]">
       <h1>Welcome</h1>
       <p>First, please sign in!</p>
       <p>See the menu on the left for sign-in and other options.</p>
+    </div>
+    <div class="card" hidden$="[[!user.authenticated]]">
+      <h1>Previous Requests <small><em>Submitted By: [[user.email]]</em></small></h1>
+      <p>
+        <ul>
+          <li>
+              <span>ID</span>
+              <span>Type</span>
+              <span>Opened</span>
+              <span>Location</span>
+              <span>Status</span>
+              <span>Contact</span>
+            </li>
+            <template is="dom-repeat" items="[[requests]]" sort="_previousRequestsOrder">
+              <li>
+                <span>[[item.RequestId]]</span>
+                <span>[[item.Description]]</span>
+                <span>[[item.DateSubmitTo]]</span>
+                <span>[[item.ProbAddress]]</span>
+                <span>[[item.Status]]</span>
+                <span>[[item.SubmitToEmail]]</span>
+              </li>
+            </template>
+        </ul>
+      </p>
     </div>
   </template>
 
@@ -32,6 +148,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         class MyWelcome extends Polymer.Element {
             static get is() {
                 return 'my-welcome';
+            }
+            static get properties() {
+                return {
+                    user: {
+                      type: Object,
+                      value: { authenticated: false, email: false }
+                    },
+                    requests: Array
+                }
+            }
+
+            static get observers() {
+                return [
+                    '_userChanged(user.email)'
+                ];
+            }
+            _userChanged(email) {
+                if (email) {
+                  this.$.searchUserRequests.generateRequest();
+                }
+            }
+            _previousRequestsOrder(a, b) {
+              return a.Status < b.Status ? -1 : 1;
             }
         }
 

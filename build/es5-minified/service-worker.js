@@ -37,7 +37,7 @@
 /* eslint-disable indent, no-unused-vars, no-multiple-empty-lines, max-nested-callbacks, space-before-function-paren, quotes, comma-spacing */
 'use strict';
 
-var precacheConfig = [["bower_components/app-layout/app-drawer-layout/app-drawer-layout.html","44de121d4742d823967a761e5c7b4e20"],["bower_components/app-layout/app-drawer/app-drawer.html","0aebee1ef87299228d6daa709a37eceb"],["bower_components/app-layout/app-header-layout/app-header-layout.html","d3072f8cf30de94a99ac4825d1e07df8"],["bower_components/app-layout/app-header/app-header.html","62d69c07d519c29122a10f54fee304af"],["bower_components/app-layout/app-layout-behavior/app-layout-behavior.html","a64d340503d802c441f231999bc50513"],["bower_components/app-layout/app-scroll-effects/app-scroll-effects-behavior.html","ffadeb52557b2c0fc7a28ff106903622"],["bower_components/app-layout/app-scroll-effects/app-scroll-effects.html","47ef4a1229fe38f7ebb0b846676908c9"],["bower_components/app-layout/app-scroll-effects/effects/blend-background.html","cb65065f730d76538be3d15794650adf"],["bower_components/app-layout/app-scroll-effects/effects/fade-background.html","d7fe94ca7c381f0d814ae8f03e7a1707"],["bower_components/app-layout/app-scroll-effects/effects/material.html","93d85d4f6d42fd57d73fda270f8b8b5d"],["bower_components/app-layout/app-scroll-effects/effects/parallax-background.html","cb919252b3b9eb1c7d57fc7022353c9a"],["bower_components/app-layout/app-scroll-effects/effects/resize-snapped-title.html","e1917db70703c8af036b1a29fd7d6237"],["bower_components/app-layout/app-scroll-effects/effects/resize-title.html","91cbbf08e10ad1d60804d5403f10b679"],["bower_components/app-layout/app-scroll-effects/effects/waterfall.html","af6cf17fbb4f94216eea9d2e6c26a775"],["bower_components/app-layout/app-toolbar/app-toolbar.html","1969068eeac3ed606025f04bf7871282"],["bower_components/app-layout/helpers/helpers.html","1da38888481edb36a5d7f15a8633dd9f"],["bower_components/app-route/app-location.html","77bdb903ec70eece5e41c911c355d0cf"],["bower_components/app-route/app-route-converter-behavior.html","717082ae29ce5616531c20e1ddc20d3c"],["bower_components/app-route/app-route.html","1b749c5cac5a95fd9410bb35daef3276"],["bower_components/coa-ajax/coa-ajax.html","c37875704a2ca08fa7ab03f31496ccc3"],["bower_components/coa-user/coa-user.html","dc98255b9aa8660e8ef51cbfa56e3638"],["bower_components/font-roboto/roboto.html","22fe760d42278ca3b2b3718390fbb1bd"],["bower_components/iron-a11y-announcer/iron-a11y-announcer.html","2147d8e18cb4f776df227ff7c5c6da86"],["bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html","73983c95dc8427e20e2b9a7b9c71d2d7"],["bower_components/iron-ajax/iron-ajax.html","0990974ada7fc5a2820ff323d10fe7f5"],["bower_components/iron-ajax/iron-request.html","ab9837f802f4948635b731566480bacc"],["bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html","a85e1c0de0b6b84bd70bc7c356b8370f"],["bower_components/iron-behaviors/iron-button-state.html","40f4d0c50c0df6b151f84006fb1823ac"],["bower_components/iron-behaviors/iron-control-state.html","fb2613f2ffc10065e718be1f9969acb5"],["bower_components/iron-flex-layout/iron-flex-layout.html","3e285c2698feec264710fffd609630ad"],["bower_components/iron-form-element-behavior/iron-form-element-behavior.html","2f0a609a52c3b90dc78d529858f04445"],["bower_components/iron-icon/iron-icon.html","cb0fc2d7d07009ab937d42c387acf9e1"],["bower_components/iron-iconset-svg/iron-iconset-svg.html","03e6664a85fae57bf66d7563eb277ed4"],["bower_components/iron-input/iron-input.html","13561c0aa93c046a964d55a400333cf4"],["bower_components/iron-location/iron-location.html","a53d089df7c2f93417675531e89dc266"],["bower_components/iron-location/iron-query-params.html","213f4fa4294b5992135e4bfe5ae50507"],["bower_components/iron-media-query/iron-media-query.html","e58c5c28ea1a1707a79d208e32e995dc"],["bower_components/iron-meta/iron-meta.html","aa90ac8b9694a6a582c9bed8b3bef3f8"],["bower_components/iron-pages/iron-pages.html","aeb0aff1b1109fc353d8b7af89792220"],["bower_components/iron-resizable-behavior/iron-resizable-behavior.html","0a37dd92e02c6863cdfa37710ab511bd"],["bower_components/iron-scroll-target-behavior/iron-scroll-target-behavior.html","58238ea481cc89dd8bc3eb98d30a2bba"],["bower_components/iron-selector/iron-multi-selectable.html","f89d61e11f7c4657c909f602c06b09ca"],["bower_components/iron-selector/iron-selectable.html","58ad69762f3c8b328903bdd79aaf7efe"],["bower_components/iron-selector/iron-selection.html","1548ed2c2db7d8b51428f512de787305"],["bower_components/iron-selector/iron-selector.html","76e80b0f3e145257b34de6fde1addd1a"],["bower_components/iron-validatable-behavior/iron-validatable-behavior.html","504b1856b7fdd09f43bf98eb3ea697b3"],["bower_components/paper-behaviors/paper-button-behavior.html","793782859ac11addc2f665dda089da48"],["bower_components/paper-behaviors/paper-inky-focus-behavior.html","891a915a3403caeff1fc3a4a9ed1e9c3"],["bower_components/paper-behaviors/paper-ripple-behavior.html","f8da6bdab811221037f001d1b16785c9"],["bower_components/paper-button/paper-button.html","e56a59ed88bb90e19df8338c53e984a5"],["bower_components/paper-icon-button/paper-icon-button.html","48eec3cbac79a0fc3778854e1b0996ba"],["bower_components/paper-input/paper-input-addon-behavior.html","db9171b2bf4fdb8327dd4f311ccc0296"],["bower_components/paper-input/paper-input-behavior.html","4458c0a83b4cc2e698f0cec068f6780a"],["bower_components/paper-input/paper-input-char-counter.html","5e800861916aee9a137a5c6397265435"],["bower_components/paper-input/paper-input-container.html","5aedfb58091a8ea938850cf80bafc554"],["bower_components/paper-input/paper-input-error.html","bd45af6be1c5185799be39f0194252ea"],["bower_components/paper-input/paper-input.html","f50ea31c1030a0fbf269a7f75625811f"],["bower_components/paper-input/paper-textarea.html","385c7e364fe1820015d9ae924dcc15ce"],["bower_components/paper-ripple/paper-ripple.html","8cb2d836f86ca84aaad9fe07b032276d"],["bower_components/paper-styles/color.html","549925227bc04f9c17b52e2e35cd2e26"],["bower_components/paper-styles/default-theme.html","5357609d26772a270098c0e3ebb1bb98"],["bower_components/paper-styles/element-styles/paper-material-styles.html","8d8d619e6f98be2c5d7e49ca022e423c"],["bower_components/paper-styles/shadow.html","1f23a65a20ed44812df26a9c16468e3f"],["bower_components/paper-styles/typography.html","195497070df39ff889ce243627cf6589"],["bower_components/polymer/lib/elements/array-selector.html","fe98ef26af1d3c0203f860abe33c7ea3"],["bower_components/polymer/lib/elements/custom-style.html","b246cd8d5813053a40e5babd9afdcd90"],["bower_components/polymer/lib/elements/dom-bind.html","f3e83e5cc726f3669e23ee66d3636b07"],["bower_components/polymer/lib/elements/dom-if.html","de86afbdc9f052599c600f668ddfc2f8"],["bower_components/polymer/lib/elements/dom-module.html","ff7101dc5b037becb673fd313d47eb28"],["bower_components/polymer/lib/elements/dom-repeat.html","aa4ff8fa7c736931c2d523c58836f4d9"],["bower_components/polymer/lib/legacy/class.html","52bb09aa0d90279638bc558a0183a1d7"],["bower_components/polymer/lib/legacy/legacy-element-mixin.html","2083539ce63abf615f97e22af769c459"],["bower_components/polymer/lib/legacy/mutable-data-behavior.html","a03f5783244490e022bfdee9bc36c1d8"],["bower_components/polymer/lib/legacy/polymer-fn.html","5d99aef273c86bd97b5b35b1252e660a"],["bower_components/polymer/lib/legacy/polymer.dom.html","40839739ebfc3eb5282a7e8ac9c4dbaf"],["bower_components/polymer/lib/legacy/templatizer-behavior.html","b68221cfeaa232f815aa9eac5d307d22"],["bower_components/polymer/lib/mixins/element-mixin.html","6f9531c70890734c8a69a62b37254bde"],["bower_components/polymer/lib/mixins/gesture-event-listeners.html","46d469e21135419c27cb129e0cbcfe2e"],["bower_components/polymer/lib/mixins/mutable-data.html","1ee8caa2078cd3302f7ceb8f169dc283"],["bower_components/polymer/lib/mixins/property-accessors.html","cd90c8922c882b362f184d57f21f03b8"],["bower_components/polymer/lib/mixins/property-effects.html","c9b6bf09486a42db58770cf87905c815"],["bower_components/polymer/lib/mixins/template-stamp.html","e1a1ff3fc2300ef7a072bae1c15c1ec4"],["bower_components/polymer/lib/utils/array-splice.html","9c1a8201554264f7ab03047243aa008e"],["bower_components/polymer/lib/utils/async.html","16db8592c7ca246f0d7ae821b2f8b7ed"],["bower_components/polymer/lib/utils/boot.html","3391dfa5a91291f9a24cc8b7ba090450"],["bower_components/polymer/lib/utils/case-map.html","64a92e8ff052e4e0eef6f91c2b377672"],["bower_components/polymer/lib/utils/debounce.html","356e336d5a023cf35f84821e37db5e5c"],["bower_components/polymer/lib/utils/flattened-nodes-observer.html","082952a0812b3387e8a40710c05987bd"],["bower_components/polymer/lib/utils/flush.html","ba27adf065d373f6b0e434d0d8ef6fd9"],["bower_components/polymer/lib/utils/gestures.html","a932c0518514a2f405087c3fbc69f126"],["bower_components/polymer/lib/utils/import-href.html","d8b6004a95ea428da210fb8ac176b583"],["bower_components/polymer/lib/utils/mixin.html","0e4ba1a810f7c2d5df89f7c41f2ffb86"],["bower_components/polymer/lib/utils/path.html","15575ff2f79d923e6f9ed443a1ea98b2"],["bower_components/polymer/lib/utils/render-status.html","60fa263b678961716ff8fe7e948c8f4a"],["bower_components/polymer/lib/utils/resolve-url.html","dfc0c7635dbb36cb322720ca162c05ec"],["bower_components/polymer/lib/utils/style-gather.html","b60d81b7ee3a04c859f1bdd2c77b0268"],["bower_components/polymer/lib/utils/templatize.html","2fc4924f6cf459f95516819dbc8033ea"],["bower_components/polymer/lib/utils/unresolved.html","2ed3277470301933b1af10d413d8c614"],["bower_components/polymer/polymer-element.html","31b98668d3a96df5ab93c6fd2dd8d6db"],["bower_components/polymer/polymer.html","041f02f3388a7a3c087298fde431df80"],["bower_components/shadycss/apply-shim.html","5b73ef5bfcac4955f6c24f55ea322eb1"],["bower_components/shadycss/apply-shim.min.js","985834a8133da3bf5ef839002604a080"],["bower_components/shadycss/custom-style-interface.html","7e28230b85cdcc2488e87172c3395d52"],["bower_components/shadycss/custom-style-interface.min.js","eb89d3862a054d45bdd7c0a009f0a98c"],["bower_components/webcomponentsjs/custom-elements-es5-adapter.js","e6324a1b9a6f7dbac892a472464088db"],["bower_components/webcomponentsjs/gulpfile.js","5b9593e6c3a2a87a866c1169114c745e"],["bower_components/webcomponentsjs/webcomponents-hi-ce.js","495de81020abfefd4f0e3dcff6b7fd3e"],["bower_components/webcomponentsjs/webcomponents-hi-sd-ce.js","68bc22bcb5543e6caabd1d66dc9e1ca9"],["bower_components/webcomponentsjs/webcomponents-hi.js","0ac538bae69f6beb629d2357350041e7"],["bower_components/webcomponentsjs/webcomponents-lite.js","c89f66cb63a098895f4b1b42eb371673"],["bower_components/webcomponentsjs/webcomponents-loader.js","f13bbbbf647b7922575a7894367ddaaf"],["bower_components/webcomponentsjs/webcomponents-sd-ce.js","c5f6fe397db634cde89f66c2f1bc2f62"],["index.html","6868f75edb3154783a561e75af9373bf"],["manifest.json","17e9de7a42ef99ca286f2e3252c7b544"],["src/my-auburn.html","760ba7f71033c48d67cec86cea0c2020"],["src/my-facility-maintenance.html","da66073457d1502efb65e077e6a965f0"],["src/my-icons.html","1618712b865f25904ddffef31c5d9db0"],["src/my-view404.html","30dabfac36cfbf8fd388f96c708578fa"],["src/my-welcome.html","504303baf9357c789bab2a38a7240374"],["src/shared-styles.html","d5133ed0135bb42a87b98527f8f1c7aa"]];
+var precacheConfig = [["bower_components/app-layout/app-drawer-layout/app-drawer-layout.html","499da7504e6a81bc27962db7330a2087"],["bower_components/app-layout/app-drawer/app-drawer.html","899b4c580e4cf7180cfec2891e07e82e"],["bower_components/app-layout/app-header-layout/app-header-layout.html","f92f45cdb28307e23d100de8111581af"],["bower_components/app-layout/app-header/app-header.html","897f47b476ac2ed552c4cd78b81e6096"],["bower_components/app-layout/app-layout-behavior/app-layout-behavior.html","6067be0559f2e78c71baa692978c3b10"],["bower_components/app-layout/app-scroll-effects/app-scroll-effects-behavior.html","886071cbf48064bca775e06ec8e6d80e"],["bower_components/app-layout/app-scroll-effects/app-scroll-effects.html","47ef4a1229fe38f7ebb0b846676908c9"],["bower_components/app-layout/app-scroll-effects/effects/blend-background.html","72bd6e4c581a3d0232f4b31b1fe2b341"],["bower_components/app-layout/app-scroll-effects/effects/fade-background.html","74151f1d340a317bf6f9c9d02a777344"],["bower_components/app-layout/app-scroll-effects/effects/material.html","b948c0619fd9f2833f1b4166045b415f"],["bower_components/app-layout/app-scroll-effects/effects/parallax-background.html","723d241b3047b5d24e80307012c02912"],["bower_components/app-layout/app-scroll-effects/effects/resize-snapped-title.html","3ac33f76fc37c074e36acad9d948fd96"],["bower_components/app-layout/app-scroll-effects/effects/resize-title.html","3b7d168fafcc296b516b19c238ce7b24"],["bower_components/app-layout/app-scroll-effects/effects/waterfall.html","665dc9bd3a3f66975382149f440fdfac"],["bower_components/app-layout/app-toolbar/app-toolbar.html","cac42c92a39fd9611d080d1362905030"],["bower_components/app-layout/helpers/helpers.html","9d316f2db7197864684c38ccb7b2297b"],["bower_components/app-route/app-location.html","4b3fa0cb3b1af2c1ccc92587b25b1913"],["bower_components/app-route/app-route-converter-behavior.html","ab302160ad8b1bdf4e06d29b674751f2"],["bower_components/app-route/app-route.html","262f9b8a6eaaee07a5250736ca4425b6"],["bower_components/coa-ajax/coa-ajax.html","1d9b99b2ff6648aa9051209d588d39d1"],["bower_components/coa-user/coa-user.html","4cb1364c375cced802bbc43178922a25"],["bower_components/font-roboto/roboto.html","22fe760d42278ca3b2b3718390fbb1bd"],["bower_components/iron-a11y-announcer/iron-a11y-announcer.html","26ca0615d1958492c0589e7d47e6d4e8"],["bower_components/iron-a11y-keys-behavior/iron-a11y-keys-behavior.html","214b7ed364030386c0f9ad51a6e8a5c0"],["bower_components/iron-ajax/iron-ajax.html","da6640bab37c14ca818d5bb4faf1bd88"],["bower_components/iron-ajax/iron-request.html","a2373a1c184b1568160b7635236926fa"],["bower_components/iron-autogrow-textarea/iron-autogrow-textarea.html","30b61f05aeb4fc1b6c09f35f441bc86b"],["bower_components/iron-behaviors/iron-button-state.html","d8f74265f517dc1edfef7d4dc47f8d7e"],["bower_components/iron-behaviors/iron-control-state.html","971b28a26e537e2c9f581b45d1d3d2a7"],["bower_components/iron-flex-layout/iron-flex-layout.html","3e285c2698feec264710fffd609630ad"],["bower_components/iron-form-element-behavior/iron-form-element-behavior.html","1856c886fd1b03a96ae6df3db6796e9b"],["bower_components/iron-icon/iron-icon.html","c82f7863797094f8fc5c00a4b8a36573"],["bower_components/iron-iconset-svg/iron-iconset-svg.html","dd034384d697a0e8694e3a545cfd8a2f"],["bower_components/iron-input/iron-input.html","04148d43c6c3adeb561894ca75a41f2a"],["bower_components/iron-location/iron-location.html","dd09b1424b62f092da5f03140e62eceb"],["bower_components/iron-location/iron-query-params.html","37a5c897abd44fb158e7acd63bc28b9a"],["bower_components/iron-media-query/iron-media-query.html","2452503079d0a3cef2bcff004d5c8ea8"],["bower_components/iron-meta/iron-meta.html","f6834d9c2826a3bfa6cbdf4afd239a6c"],["bower_components/iron-pages/iron-pages.html","36a8ff3259cda98c825e940ef9ee6436"],["bower_components/iron-resizable-behavior/iron-resizable-behavior.html","02227937bcb372ff5ce9a484e108f352"],["bower_components/iron-scroll-target-behavior/iron-scroll-target-behavior.html","b116b815dc1ad2c7aba6e7ef4f1b88a2"],["bower_components/iron-selector/iron-multi-selectable.html","1bf080a64d44c8f2309d7db0fa8c0ed8"],["bower_components/iron-selector/iron-selectable.html","02b12cbd8e9a77f64e3ae47729c95baa"],["bower_components/iron-selector/iron-selection.html","37263b189d9881ccbe86e391625d0545"],["bower_components/iron-selector/iron-selector.html","b16e67c27ef856b12149a467cc5223b0"],["bower_components/iron-validatable-behavior/iron-validatable-behavior.html","efbc5b717b88bffec57c4009237c8b3b"],["bower_components/paper-behaviors/paper-button-behavior.html","2dc5b49def828a802dc64b891c628316"],["bower_components/paper-behaviors/paper-inky-focus-behavior.html","eacb4b0c1516411b27c8880c2890fcc0"],["bower_components/paper-behaviors/paper-ripple-behavior.html","8d558844974d32f9b060c6df7e902f88"],["bower_components/paper-button/paper-button.html","6e530cba122b581b4f9b4cf0708958db"],["bower_components/paper-icon-button/paper-icon-button.html","6aba788a3416e3768bd95175364d8060"],["bower_components/paper-input/paper-input-addon-behavior.html","55ea37e8a0001f220178fac0a0c4cccd"],["bower_components/paper-input/paper-input-behavior.html","93485a24fb403aba762f5f3ec93bc158"],["bower_components/paper-input/paper-input-char-counter.html","8198f008b7ec009f2377b3c48ad4d32f"],["bower_components/paper-input/paper-input-container.html","c1383edf9e7f1ffd8e49b298d09bb29a"],["bower_components/paper-input/paper-input-error.html","fe4e8a3a47f3e5d0c399d199e2981f89"],["bower_components/paper-input/paper-input.html","69698bfd0b779685a1ac817ce97285ce"],["bower_components/paper-input/paper-textarea.html","e201162f201a7104c16956c4a5675cb3"],["bower_components/paper-ripple/paper-ripple.html","c89c00fe92815709a7d1972538a6f744"],["bower_components/paper-styles/color.html","549925227bc04f9c17b52e2e35cd2e26"],["bower_components/paper-styles/default-theme.html","5357609d26772a270098c0e3ebb1bb98"],["bower_components/paper-styles/element-styles/paper-material-styles.html","8d8d619e6f98be2c5d7e49ca022e423c"],["bower_components/paper-styles/shadow.html","1f23a65a20ed44812df26a9c16468e3f"],["bower_components/paper-styles/typography.html","195497070df39ff889ce243627cf6589"],["bower_components/polymer/lib/elements/array-selector.html","cab5f7b8bce02b3d632a19fb8c372d46"],["bower_components/polymer/lib/elements/custom-style.html","583981b00e9d31efec919bb6d4ad0b7d"],["bower_components/polymer/lib/elements/dom-bind.html","9fc72e82de0acdc3956120d119e394a7"],["bower_components/polymer/lib/elements/dom-if.html","ba2fb160eae4efcfb912f6920d8c254c"],["bower_components/polymer/lib/elements/dom-module.html","ae36fc95c5ff3c0d05b8b9856701326d"],["bower_components/polymer/lib/elements/dom-repeat.html","bd483be4b6aceee8be965b810df15330"],["bower_components/polymer/lib/legacy/class.html","b527bf3b6df2282454252a534d4335ab"],["bower_components/polymer/lib/legacy/legacy-element-mixin.html","801a2ea162816e6eb2f3081d0bb83027"],["bower_components/polymer/lib/legacy/mutable-data-behavior.html","88d354a4884a6e0ad89a5b3df68e7832"],["bower_components/polymer/lib/legacy/polymer-fn.html","c8e3c17a270dca9b45abe1a1b8a63f93"],["bower_components/polymer/lib/legacy/polymer.dom.html","33b4cba07336e4244e6a74c358484fc5"],["bower_components/polymer/lib/legacy/templatizer-behavior.html","0cc80eb910a7a9a4e3d44e0a30a24bbe"],["bower_components/polymer/lib/mixins/element-mixin.html","659b011549f86e4325c5727fc6c3448d"],["bower_components/polymer/lib/mixins/gesture-event-listeners.html","287c19447d3a60fbd716d134297e230d"],["bower_components/polymer/lib/mixins/mutable-data.html","c6105c52dcc7204ccc1a49e382df48cd"],["bower_components/polymer/lib/mixins/property-accessors.html","b04337056e9d644708e0b368e8d80489"],["bower_components/polymer/lib/mixins/property-effects.html","9f58b513ebc66c0cd8f563771c43b3ba"],["bower_components/polymer/lib/mixins/template-stamp.html","4dced3f4be3f431058bb0ce4ab105fad"],["bower_components/polymer/lib/utils/array-splice.html","8d60febfb27aaeedf47f43ff7b11ddb1"],["bower_components/polymer/lib/utils/async.html","d2953162092f5b3f5c00b2a4a6e0f258"],["bower_components/polymer/lib/utils/boot.html","f723125c9462e801e0421a8e30c968d3"],["bower_components/polymer/lib/utils/case-map.html","953a3db276974a4aafd8ac900bbf9ee1"],["bower_components/polymer/lib/utils/debounce.html","6b32d5b14570f9be0b74ee1b06a672d2"],["bower_components/polymer/lib/utils/flattened-nodes-observer.html","039f9c015dba68d9efa2485ee7f5b5fc"],["bower_components/polymer/lib/utils/flush.html","51af95ddb265d8dd5ca2ea77000cf8e2"],["bower_components/polymer/lib/utils/gestures.html","c8f6d4bbc6722386ed57023048dbd56d"],["bower_components/polymer/lib/utils/import-href.html","efb0710511a5d33db257daa807467f74"],["bower_components/polymer/lib/utils/mixin.html","c2827a63bc2619eefe1fb19afd37cebd"],["bower_components/polymer/lib/utils/path.html","dcdaec1c85c22a6d94dbb49fee1f00ee"],["bower_components/polymer/lib/utils/render-status.html","1b3477e684f3911b0d45c3261cc7aa11"],["bower_components/polymer/lib/utils/resolve-url.html","13046ef2ff0c3c3291c0c68c28038a43"],["bower_components/polymer/lib/utils/style-gather.html","9ee7d33146fa76cac1dbc785d54aca42"],["bower_components/polymer/lib/utils/templatize.html","a492b79fec1abca3157deb97fa761fbe"],["bower_components/polymer/lib/utils/unresolved.html","50b8ec3ab60b6b40f4cf4fc931027b80"],["bower_components/polymer/polymer-element.html","65481e12cd5a762b307d8d83a7668241"],["bower_components/polymer/polymer.html","041f02f3388a7a3c087298fde431df80"],["bower_components/shadycss/apply-shim.html","5b73ef5bfcac4955f6c24f55ea322eb1"],["bower_components/shadycss/apply-shim.min.js","9554c315a9b688e4ebcd17714b5db747"],["bower_components/shadycss/custom-style-interface.html","7e28230b85cdcc2488e87172c3395d52"],["bower_components/shadycss/custom-style-interface.min.js","fc9d850cc79c1cb631840a250f061025"],["bower_components/webcomponentsjs/custom-elements-es5-adapter.js","e6324a1b9a6f7dbac892a472464088db"],["bower_components/webcomponentsjs/gulpfile.js","5b9593e6c3a2a87a866c1169114c745e"],["bower_components/webcomponentsjs/webcomponents-hi-ce.js","495de81020abfefd4f0e3dcff6b7fd3e"],["bower_components/webcomponentsjs/webcomponents-hi-sd-ce.js","68bc22bcb5543e6caabd1d66dc9e1ca9"],["bower_components/webcomponentsjs/webcomponents-hi.js","0ac538bae69f6beb629d2357350041e7"],["bower_components/webcomponentsjs/webcomponents-lite.js","c89f66cb63a098895f4b1b42eb371673"],["bower_components/webcomponentsjs/webcomponents-loader.js","f13bbbbf647b7922575a7894367ddaaf"],["bower_components/webcomponentsjs/webcomponents-sd-ce.js","c5f6fe397db634cde89f66c2f1bc2f62"],["index.html","4ca6b60437dd8a3b610dfccf0aac1196"],["manifest.json","17e9de7a42ef99ca286f2e3252c7b544"],["src/my-auburn.html","4a058e94e10aa976507c051c88df6a59"],["src/my-facility-maintenance.html","4877e12137bde85f5cafc8dc5a534e20"],["src/my-icons.html","1618712b865f25904ddffef31c5d9db0"],["src/my-view404.html","85ee11b222238714a7ead99c2675d3bc"],["src/my-welcome.html","85aea605a7653aab56d387533bcb77cd"],["src/shared-styles.html","d5133ed0135bb42a87b98527f8f1c7aa"]];
 var cacheName = 'sw-precache-v3--' + (self.registration ? self.registration.scope : '');
 
 
@@ -65,7 +65,7 @@ var cleanResponse = function (originalResponse) {
       Promise.resolve(originalResponse.body) :
       originalResponse.blob();
 
-    return bodyPromise.then(function(body) {
+    return bodyPromise.then(function (body) {
       // new Response() is happy when passed either a stream or a Blob.
       return new Response(body, {
         headers: originalResponse.headers,
@@ -99,7 +99,7 @@ var isPathWhitelisted = function (whitelist, absoluteUrlString) {
 
     // Otherwise compare each path regex to the path of the URL passed in.
     var path = (new URL(absoluteUrlString)).pathname;
-    return whitelist.some(function(whitelistedPathRegex) {
+    return whitelist.some(function (whitelistedPathRegex) {
       return path.match(whitelistedPathRegex);
     });
   };
@@ -112,15 +112,15 @@ var stripIgnoredUrlParameters = function (originalUrl,
 
     url.search = url.search.slice(1) // Exclude initial '?'
       .split('&') // Split into an array of 'key=value' strings
-      .map(function(kv) {
+      .map(function (kv) {
         return kv.split('='); // Split each 'key=value' string into a [key, value] array
       })
-      .filter(function(kv) {
-        return ignoreUrlParametersMatching.every(function(ignoredRegex) {
+      .filter(function (kv) {
+        return ignoreUrlParametersMatching.every(function (ignoredRegex) {
           return !ignoredRegex.test(kv[0]); // Return true iff the key doesn't match any of the regexes.
         });
       })
-      .map(function(kv) {
+      .map(function (kv) {
         return kv.join('='); // Join each [key, value] array into a 'key=value' string
       })
       .join('&'); // Join the array of 'key=value' strings into a string with '&' in between each
@@ -131,7 +131,7 @@ var stripIgnoredUrlParameters = function (originalUrl,
 
 var hashParamName = '_sw-precache';
 var urlsToCacheKeys = new Map(
-  precacheConfig.map(function(item) {
+  precacheConfig.map(function (item) {
     var relativeUrl = item[0];
     var hash = item[1];
     var absoluteUrl = new URL(relativeUrl, self.location);
@@ -141,25 +141,25 @@ var urlsToCacheKeys = new Map(
 );
 
 function setOfCachedUrls(cache) {
-  return cache.keys().then(function(requests) {
-    return requests.map(function(request) {
+  return cache.keys().then(function (requests) {
+    return requests.map(function (request) {
       return request.url;
     });
-  }).then(function(urls) {
+  }).then(function (urls) {
     return new Set(urls);
   });
 }
 
-self.addEventListener('install', function(event) {
+self.addEventListener('install', function (event) {
   event.waitUntil(
-    caches.open(cacheName).then(function(cache) {
-      return setOfCachedUrls(cache).then(function(cachedUrls) {
+    caches.open(cacheName).then(function (cache) {
+      return setOfCachedUrls(cache).then(function (cachedUrls) {
         return Promise.all(
-          Array.from(urlsToCacheKeys.values()).map(function(cacheKey) {
+          Array.from(urlsToCacheKeys.values()).map(function (cacheKey) {
             // If we don't have a key matching url in the cache already, add it.
             if (!cachedUrls.has(cacheKey)) {
               var request = new Request(cacheKey, {credentials: 'same-origin'});
-              return fetch(request).then(function(response) {
+              return fetch(request).then(function (response) {
                 // Bail out of installation unless we get back a 200 OK for
                 // every request.
                 if (!response.ok) {
@@ -167,7 +167,7 @@ self.addEventListener('install', function(event) {
                     'response with status ' + response.status);
                 }
 
-                return cleanResponse(response).then(function(responseToCache) {
+                return cleanResponse(response).then(function (responseToCache) {
                   return cache.put(cacheKey, responseToCache);
                 });
               });
@@ -175,7 +175,7 @@ self.addEventListener('install', function(event) {
           })
         );
       });
-    }).then(function() {
+    }).then(function () {
       
       // Force the SW to transition from installing -> active state
       return self.skipWaiting();
@@ -184,21 +184,21 @@ self.addEventListener('install', function(event) {
   );
 });
 
-self.addEventListener('activate', function(event) {
+self.addEventListener('activate', function (event) {
   var setOfExpectedUrls = new Set(urlsToCacheKeys.values());
 
   event.waitUntil(
-    caches.open(cacheName).then(function(cache) {
-      return cache.keys().then(function(existingRequests) {
+    caches.open(cacheName).then(function (cache) {
+      return cache.keys().then(function (existingRequests) {
         return Promise.all(
-          existingRequests.map(function(existingRequest) {
+          existingRequests.map(function (existingRequest) {
             if (!setOfExpectedUrls.has(existingRequest.url)) {
               return cache.delete(existingRequest);
             }
           })
         );
       });
-    }).then(function() {
+    }).then(function () {
       
       return self.clients.claim();
       
@@ -207,7 +207,7 @@ self.addEventListener('activate', function(event) {
 });
 
 
-self.addEventListener('fetch', function(event) {
+self.addEventListener('fetch', function (event) {
   if (event.request.method === 'GET') {
     // Should we call event.respondWith() inside this fetch event handler?
     // This needs to be determined synchronously, which will give other fetch
@@ -242,14 +242,14 @@ self.addEventListener('fetch', function(event) {
     // event.respondWith(), using the appropriate cache key.
     if (shouldRespond) {
       event.respondWith(
-        caches.open(cacheName).then(function(cache) {
-          return cache.match(urlsToCacheKeys.get(url)).then(function(response) {
+        caches.open(cacheName).then(function (cache) {
+          return cache.match(urlsToCacheKeys.get(url)).then(function (response) {
             if (response) {
               return response;
             }
             throw Error('The cached response that was expected is missing.');
           });
-        }).catch(function(e) {
+        }).catch(function (e) {
           // Fall back to just fetch()ing the request if some unexpected error
           // prevented the cached response from being valid.
           console.warn('Couldn\'t serve response for "%s" from cache: %O', event.request.url, e);
