@@ -2,24 +2,24 @@
   "entrypoint": "index.html",
   "shell": "src\\my-auburn.html",
   "fragments": [
-    "src\\my-welcome.html",
-    "src\\my-facility-maintenance.html",
-    "src\\my-view404.html"
+    "src/my-welcome.html",
+    "src/my-facility-maintenance.html",
+    "src/my-view404.html"
   ],
   "sources": [
-    "src\\**\\*",
-    "images\\**\\*",
+    "src/**/*",
+    "images/**/*",
     "bower.json",
     "index.html",
-    "src\\my-auburn.html",
-    "src\\my-welcome.html",
-    "src\\my-facility-maintenance.html",
-    "src\\my-view404.html"
+    "src/my-auburn.html",
+    "src/my-welcome.html",
+    "src/my-facility-maintenance.html",
+    "src/my-view404.html"
   ],
   "extraDependencies": [
+    "bower_components/webcomponentsjs/*.js",
     "manifest.json",
-    "bower_components\\webcomponentsjs\\*.js",
-    "bower_components\\webcomponentsjs\\*.js"
+    "bower_components/webcomponentsjs/*.js"
   ],
   "builds": [
     {
@@ -42,5 +42,6 @@
     "rules": [
       "polymer-2"
     ]
-  }
+  },
+  "moduleResolution": "node"
 }
